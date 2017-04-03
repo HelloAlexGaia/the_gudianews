@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:padding="@dimen/dp_8"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textview_webtitle"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/colorPrimaryText"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:ems="20"
+        android:maxLines="1"
+        tools:text="Hallie Jackson reveals how she got to fill in for Willie on Sunday TODAY"
+        android:ellipsize="end"/>
+    <TextView
+        android:id="@+id/textview_section"
+        android:layout_marginBottom="@dimen/dp_4"
+        tools:text="politics"
+        style="@style/style_secondinfo"/>
+    <TextView
+        style="@style/style_secondinfo"
+        android:id="@+id/textview_date"
+        android:layout_marginBottom="@dimen/dp_8"
+        tools:text="2017.4.3"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"/>
+
+
+</LinearLayout>
