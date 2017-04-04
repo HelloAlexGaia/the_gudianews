@@ -1,6 +1,10 @@
 package com.example.android.theguardiannews;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -13,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -22,20 +27,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FragmentManager fragmentManager;
     private ProgressBar mIndeterPro;
     private LoaderManager mLoaderManager;
+    private TextView mNoNetOrData;
+    private int showProBar=1;
+    private int showNetState=2;
+    private int showNothing=3;
+    private int showNoData=4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fragmentManager=getSupportFragmentManager();
-        Fragment fragment=fragmentManager.findFragmentById(R.id.fragment_container);
-        if (fragment==null){
-            fragment=new NewsFragment();
-            fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment,TAG).commit();
+        initialData();
+        if (getNetWorkState()){
+            mLoaderManager.initLoader(mLoader,null,this);
+        }else {
+            showState(showNetState);
         }
-        mIndeterPro= (ProgressBar) findViewById(R.id.progress_indter);
-        mLoaderManager=getSupportLoaderManager();
-        mLoaderManager.initLoader(mLoader,null,this);
     }
 
     @Override
@@ -49,18 +56,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<List<NewsInfo>> onCreateLoader(int id, Bundle args) {
-        showProgressBar(true);
+        showState(showProBar);
         return new GetDataTask(getBaseContext());
     }
 
     @Override
     public void onLoadFinished(Loader<List<NewsInfo>> loader, List<NewsInfo> data) {
-        Fragment fragment=fragmentManager.findFragmentByTag(TAG);
-        boolean judge=(fragment instanceof onDataFinish);
-        if (judge){
-            ((onDataFinish) fragment).dataFinished();
+        if (data.size()==0){
+            showState(showNoData);
+        }else {
+            Fragment fragment=fragmentManager.findFragmentByTag(TAG);
+            if (fragment instanceof onDataFinish){
+                ((onDataFinish) fragment).dataFinished();
+            }
+            showState(showNothing);
         }
-        showProgressBar(false);
     }
 
     @Override
@@ -76,7 +86,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         SharedPreferences.Editor editor=preferences.edit();
         editor.putString(GuardianNews.QUERYTAG,query);
         editor.apply();
-        mLoaderManager.restartLoader(mLoader,null,this);
+        if (getNetWorkState()){
+            mLoaderManager.restartLoader(mLoader,null,this);
+        }else {
+            showState(showNetState);
+        }
         return true;
     }
 
@@ -87,12 +101,49 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public interface onDataFinish{
         public void dataFinished();
+        public void clearData();
     }
-    private void showProgressBar(boolean state){
-        if (state){
+    private void showState(int state){
+        if (state==showProBar){
             mIndeterPro.setVisibility(View.VISIBLE);
+            mNoNetOrData.setVisibility(View.GONE);
+        }else if (state==showNetState){
+            mIndeterPro.setVisibility(View.GONE);
+            mNoNetOrData.setText(R.string.no_internet);
+            Drawable drawable=getResources().getDrawable(R.drawable.no_internet);
+            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+            mNoNetOrData.setCompoundDrawables(null,drawable,null,null);
+            mNoNetOrData.setVisibility(View.VISIBLE);
+        }else if (state==showNoData){
+            mIndeterPro.setVisibility(View.GONE);
+            mNoNetOrData.setText(R.string.no_news);
+            Drawable drawable=getResources().getDrawable(R.drawable.data);
+            drawable.setBounds(0,0,drawable.getMinimumWidth(),drawable.getMinimumHeight());
+            mNoNetOrData.setCompoundDrawables(null,drawable,null,null);
+            mNoNetOrData.setVisibility(View.VISIBLE);
         }else {
+            mNoNetOrData.setVisibility(View.GONE);
             mIndeterPro.setVisibility(View.GONE);
         }
+    }
+    private void initialData(){
+        fragmentManager=getSupportFragmentManager();
+        Fragment fragment=fragmentManager.findFragmentById(R.id.fragment_container);
+        if (fragment==null){
+            fragment=new NewsFragment();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment,TAG).commit();
+        }
+        mIndeterPro= (ProgressBar) findViewById(R.id.progress_indter);
+        mLoaderManager=getSupportLoaderManager();
+        mNoNetOrData = (TextView) findViewById(R.id.textview_no_internet);
+
+    }
+    private boolean getNetWorkState(){
+        ConnectivityManager connectivityManager= (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo=connectivityManager.getActiveNetworkInfo();
+        if (activeInfo!=null&&activeInfo.isConnectedOrConnecting()){
+            return true;
+        }
+        return false;
     }
 }

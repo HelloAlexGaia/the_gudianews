@@ -82,7 +82,6 @@ public class GuardianNews {
             Log.d(TAG, "fetchUrlData: can not get item.");
         }
         List<NewsInfo> newsInfos=parsingJson(json);
-        Log.d(TAG, "fetchUrlData: "+newsInfos.toString());
         return newsInfos;
     }
     private List<NewsInfo> parsingJson(String json)  {

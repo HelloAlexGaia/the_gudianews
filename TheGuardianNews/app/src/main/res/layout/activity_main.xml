@@ -18,6 +18,14 @@
         android:indeterminate="true"
         android:layout_centerInParent="true"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_24"
+        android:id="@+id/textview_no_internet"
+        android:textColor="@color/colorSecondaryText"
+        android:layout_centerInParent="true"
+        />
 
 </RelativeLayout>
 

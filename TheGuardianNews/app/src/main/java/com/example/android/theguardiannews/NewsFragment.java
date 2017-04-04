@@ -51,6 +51,11 @@ public class NewsFragment extends Fragment implements MainActivity.onDataFinish 
         mNewsList.setAdapter(myViewAdapter);
     }
 
+    @Override
+    public void clearData() {
+        mNewsList.setAdapter(null);
+    }
+
     private class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mSection;
         private TextView mTitle;
