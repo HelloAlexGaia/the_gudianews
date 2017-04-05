@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private LoaderManager mLoaderManager;
     private TextView mNoNetOrData;
     private int showProBar=1;
-    private int showNetState=2;
+    private int showNoNet =2;
     private int showNothing=3;
     private int showNoData=4;
 
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (getNetWorkState()){
             mLoaderManager.initLoader(mLoader,null,this);
         }else {
-            showState(showNetState);
+            showState(showNoNet);
         }
     }
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (getNetWorkState()){
             mLoaderManager.restartLoader(mLoader,null,this);
         }else {
-            showState(showNetState);
+            showState(showNoNet);
         }
         return true;
     }
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (state==showProBar){
             mIndeterPro.setVisibility(View.VISIBLE);
             mNoNetOrData.setVisibility(View.GONE);
-        }else if (state==showNetState){
+        }else if (state== showNoNet){
             mIndeterPro.setVisibility(View.GONE);
             mNoNetOrData.setText(R.string.no_internet);
             Drawable drawable=getResources().getDrawable(R.drawable.no_internet);

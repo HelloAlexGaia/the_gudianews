@@ -17,30 +17,24 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import static android.app.SearchManager.QUERY;
 import static android.content.ContentValues.TAG;
+import static com.example.android.theguardiannews.WebQueryParameter.*;
+import static com.example.android.theguardiannews.WebQueryParameter.API_KEY;
+import static com.example.android.theguardiannews.WebQueryParameter.API_KEY_VALE;
+import static com.example.android.theguardiannews.WebQueryParameter.DEAFAULT;
+import static com.example.android.theguardiannews.WebQueryParameter.WBBMAIN;
 
 /**
  * Created by 张俊秋 on 2017/3/30.
  */
 
 public class GuardianNews {
-    private final String WBBMAIN="https://content.guardianapis.com/search?";
-    private final String QUERY="q";
-    private final String API_KEY="api-key";
-    private final String API_KEY_VALE="536d0c8c-37aa-403c-a9cc-26fa9dbc4878";
-    private final String RESPONSE="response";
-    private final String RESULTS="results";
-    private final String SECTIONNAME="sectionName";
-    private final String WEBPUBLICATIONDATE="webPublicationDate";
-    private final String WEBTITLE="webTitle";
-    private final String WEBURL="webUrl";
-    private final String DEAFAULT="debates";
-    public final static String QUERYTAG="querytag";
     private Context mContext;
     public GuardianNews(Context context){
         mContext=context;
     }
-    public byte[] getUrlByte(String urlWebsite) throws IOException {
+    private byte[] getUrlByte(String urlWebsite) throws IOException {
         URL url=new URL(urlWebsite);
         HttpURLConnection connection= (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -63,7 +57,7 @@ public class GuardianNews {
             connection.disconnect();
         }
     }
-    public String getUrlString(String urlWebsite) throws IOException {
+    private String getUrlString(String urlWebsite) throws IOException {
         return new String(getUrlByte(urlWebsite));
     }
 
@@ -81,8 +75,7 @@ public class GuardianNews {
         } catch (IOException e){
             Log.d(TAG, "fetchUrlData: can not get item.");
         }
-        List<NewsInfo> newsInfos=parsingJson(json);
-        return newsInfos;
+        return parsingJson(json);
     }
     private List<NewsInfo> parsingJson(String json)  {
         NewsInfoLab newLab=NewsInfoLab.getNewsInfoLabInstance(mContext);
