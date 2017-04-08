@@ -30,6 +30,7 @@ import static com.example.android.theguardiannews.WebQueryParameter.WBBMAIN;
  */
 
 public class GuardianNews {
+    public final static  String QUERYTAG="querytag";
     private Context mContext;
     public GuardianNews(Context context){
         mContext=context;

@@ -16,5 +16,5 @@ public class WebQueryParameter {
     public final static String WEBTITLE="webTitle";
     public final static String WEBURL="webUrl";
     public static final String DEAFAULT="debates";
-    public final static  String QUERYTAG="querytag";
+
 }
